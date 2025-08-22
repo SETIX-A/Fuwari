@@ -94,8 +94,7 @@ for i in range(10):
 延续上面第3项的最后一行）。
 
 这是一个指向[一个网站](http://foo.bar)的链接，一个指向[本地
-文档](local-doc.html)的链接，以及一个指向[当前
-文档中某个章节标题](#an-h2-header)的链接。这里是一个脚注[^1]。
+文档](/Users/xian/Documents/setix/Fuwari/src/content/spec/about.md)的链接，以及一个指向[当前文档中某个章节标题](#an-h2-header)的链接。这里是一个脚注[^1]。
 
 [^1]: 脚注文本放在这里。
 

@@ -43,12 +43,8 @@ export const navBarConfig: NavBarConfig = {
 	links: [
 		{ name: "首页", url: "/" }, // LinkPreset.Home
 		{ name: "归档", url: "/archive" }, // LinkPreset.Archive
+		{ name: "系列", url: "/series" },
 		{ name: "关于", url: "/about" },
-		{
-			name: "有待探索",
-			url: "", // Internal links should not include the base path, as it is automatically added
-			external: false, // Show an external link icon and will open in a new tab
-		},
 	],
 };
 

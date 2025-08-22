@@ -154,7 +154,9 @@ for i in range(10):
 
 图片可以像这样指定：
 
-[//]: # (![示例图片](./demo-banner.png "一个示例性的图片"))
+```![示例图片](src/assets/images/demo-banner.jpg "一个示例性的图片")```
+
+![示例图片](src/assets/images/demo-banner.jpg "一个示例性的图片")
 
 内联数学方程式可以这样写：$\omega = d\phi / dt$。块级
 数学公式应该单独占一行，并用双美元符号包裹：

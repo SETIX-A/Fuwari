@@ -9,10 +9,12 @@ X：象征未知、变量、未来感（如 SpaceX、X 档案），也代表跨�
 
 “SETIX-A” = 主动探索未知边界的前沿个体/品牌。理念：用技术和创造力开拓新领域（科技、艺术、设计等），保持独特性和实验性。
 
-::github{repo="SETIX-A/Fuwari"}
+---
+# 🌱关于我
+👋你好，我是``Setix``，一名普通的中国打工仔，
 
-> ### 本网站使用的图片来源 
-> - [Unsplash](https://unsplash.com/)
-> - [Wallhaven](https://wallhaven.cc/)
-> - 头像：[Roundbee08](https://wallhaven.cc/w/ly3j6y) by [MrFav](https://wallhaven.cc/user/MrFav)
-> - [Rabbit - v1.4 Showcase](https://civitai.com/posts/586908) by [Rabbit_YourMajesty](https://civitai.com/user/Rabbit_YourMajesty)
+---
+# ✉️ 联系我
+- [Socrates.02zx@Gmail.com](mailto:Socrates.02zx@Gmail.com)
+- WeChat：A-Musk
+- QQ：[2307203747](tencent://AddFriend/check/?from_site=web&uin=2307203747)

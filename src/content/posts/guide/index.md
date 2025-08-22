@@ -8,8 +8,6 @@ category: 指南
 draft: false
 ---
 
-> 封面图片来源：[来源](https://wallhaven.cc/w/xelrwv)
-
 该博客模板基于 [Astro](https://astro.build/) 构建。对于本指南中未提及的事项，您或许可以在 [Astro 官方文档](https://docs.astro.build/) 中找到答案。
 
 ## 文章的 Front-matter
@@ -17,8 +15,8 @@ draft: false
 ```yaml
 ---
 title: 我的第一篇博客文章
-published: 2023-09-09
-description: 这是我新的 Astro 博客的第一篇文章。
+published: 2025-01-01
+description: 这是我新博客的第一篇文章。
 image: ./cover.jpg
 tags: [Foo, Bar]
 category: 前端

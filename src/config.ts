@@ -44,7 +44,6 @@ export const navBarConfig: NavBarConfig = {
 		{ name: "首页", url: "/" }, // LinkPreset.Home
 		{ name: "归档", url: "/archive" }, // LinkPreset.Archive
 		{ name: "关于", url: "/about" },
-		{ name: "待探索" },
 	],
 };
 

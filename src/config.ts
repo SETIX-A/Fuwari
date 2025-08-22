@@ -58,16 +58,16 @@ export const profileConfig: ProfileConfig = {
 	bio: "这里是一个关于人工智能、心理学、编程、经济学、数学和社会系统的思考空间。愿它能引发你的片刻思索。",
 	links: [
 		{
-			name: "Twitter",
+			name: "X",
 			icon: "fa6-brands:square-x-twitter", // Visit https://icones.js.org/ for icon codes
 			// You will need to install the corresponding icon set if it's not already included
 			// `pnpm add @iconify-json/<icon-set-name>`
 			url: "https://x.com/SETIX_A",
 		},
 		{
-			name: "Steam",
-			icon: "fa6-brands:steam",
-			url: "https://store.steampowered.com",
+			name: "Mail",
+			icon: "ic:baseline-mail",
+			url: "mailto:Socrates.02zx@Gmail.com",
 		},
 		{
 			name: "GitHub",

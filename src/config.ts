@@ -16,17 +16,17 @@ export const siteConfig: SiteConfig = {
 		fixed: false, // Hide the theme color picker for visitors
 	},
 	banner: {
-		enable:true, // 修改为 true 后即可在主页显示图片，src后要改为图片的链接；不开启选择 false
+		enable: true, // 修改为 true 后即可在主页显示图片，src后要改为图片的链接；不开启选择 false
 		src: "assets/images/demo-banner.jpg", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
-			 enable:true, // Display the credit text of the banner image
+			enable: true, // Display the credit text of the banner image
 			text: "TOKKYU/水中", // Credit text to be displayed
 			url: "https://www.pixiv.net/artworks/133074580", // (Optional) URL link to the original artwork or artist's page
 		},
 	},
 	toc: {
-		enable:true, // Display the table of contents on the right side of the post
+		enable: true, // Display the table of contents on the right side of the post
 		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
 	},
 	favicon: [
@@ -41,9 +41,9 @@ export const siteConfig: SiteConfig = {
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-        { name: "首页", url: "/" },      // LinkPreset.Home
-        { name: "归档", url: "/archive" }, // LinkPreset.Archive
-        { name: "关于", url: "/about" },
+		{ name: "首页", url: "/" }, // LinkPreset.Home
+		{ name: "归档", url: "/archive" }, // LinkPreset.Archive
+		{ name: "关于", url: "/about" },
 		{
 			name: "GitHub",
 			url: "https://github.com/saicaca/fuwari", // Internal links should not include the base path, as it is automatically added

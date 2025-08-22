@@ -71,7 +71,7 @@ export const profileConfig: ProfileConfig = {
 		},
 		{
 			name: "GitHub",
-			icon: "fa6-brands:github",
+			icon: "fa6-brands:square-github",
 			url: "https://github.com/SETIX-A/Fuwari",
 		},
 	],

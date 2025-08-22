@@ -1,5 +1,5 @@
 ---
-title: Fuwari 简明指南
+title: 写作指南
 published: 2025-08-20
 description: "如何使用此博客模板。"
 image: "./cover.jpg"
@@ -8,15 +8,15 @@ category: 指南
 draft: false
 ---
 
-该博客模板基于 [Astro](https://astro.build/) 构建。对于本指南中未提及的事项，您或许可以在 [Astro 官方文档](https://docs.astro.build/) 中找到答案。
+该博客基于 [Astro](https://astro.build/) 构建。对于本指南中未提及的事项，您或许可以在 [Astro 官方文档](https://docs.astro.build/) 中找到答案。
 
 ## 文章的 Front-matter
 
 ```yaml
 ---
-title: 我的第一篇博客文章
+title: 文章
 published: 2025-01-01
-description: 这是我新博客的第一篇文章。
+description: 副标题
 image: ./cover.jpg
 tags: [Foo, Bar]
 category: 前端

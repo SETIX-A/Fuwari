@@ -1,18 +1,13 @@
-# 关于
-欢迎来到[Setix的小屋](https://setix.xyz/about/)。在代码与人性之间，寻找优雅的模式。
+# 🤔关于“Setix”的含义
 
 S.E.T.I.：致敬 [Search for Extraterrestrial Intelligence](https://zh.wikipedia.org/zh-cn/%E6%90%9C%E5%AF%BB%E5%9C%B0%E5%A4%96%E6%96%87%E6%98%8E%E8%AE%A1%E5%88%92) (搜寻地外文明计划)，代表对宇宙、未知的好奇与探索精神。
 
-X：象征未知、变量、未来感（如 SpaceX、X 档案），也代表跨界融合（科技、创意、艺术等）。
+X：象征未知、变量、未来感（如 [SpaceX](https://www.spacex.com/)、[X档案](https://zh.wikipedia.org/wiki/X%E6%A1%A3%E6%A1%88)），也代表跨界融合（科技、创意、艺术等）。
 
--A：代表 Alpha（开端、首要）、Advanced（先进）、Agent（行动者）。
-
-“SETIX-A” = 主动探索未知边界的前沿个体/品牌。理念：用技术和创造力开拓新领域（科技、艺术、设计等），保持独特性和实验性。
+Setix：主动探索未知边界的前沿个体/品牌。理念：用技术和创造力开拓新领域（科技、艺术、设计等），保持独特性和实验性。
 
 ---
 # 🌱关于我，以及这个空间
-
-我是``Setix``。
 
 欢迎来到我的数字花园与思考角落。这里是我探索思想、连接知识、并记录个人成长的空间。
 

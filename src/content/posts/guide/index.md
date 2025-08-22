@@ -2,13 +2,13 @@
 title: Fuwari 简明指南
 published: 2025-08-20
 description: "如何使用此博客模板。"
-image: "./cover.jpeg"
+image: "./cover.jpg"
 tags: ["Fuwari", "博客", "定制"]
 category: 指南
 draft: false
 ---
 
-> 封面图片来源：[来源](https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/208fc754-890d-4adb-9753-2c963332675d/width=2048/01651-1456859105-(colour_1.5),girl,_Blue,yellow,green,cyan,purple,red,pink,_best,8k,UHD,masterpiece,male%20focus,%201boy,gloves,%20ponytail,%20long%20hair,.jpeg)
+> 封面图片来源：[来源](https://wallhaven.cc/w/xelrwv)
 
 该博客模板基于 [Astro](https://astro.build/) 构建。对于本指南中未提及的事项，您或许可以在 [Astro 官方文档](https://docs.astro.build/) 中找到答案。
 

@@ -190,15 +190,6 @@
   </tr>
   <tr>
     <td style="padding:8px 8px; width:320px;">
-      <a href="https://blog.qmiao.top" target="_blank" class="friend-card">
-        <img src="" width="32" height="32" alt="暂无头像"/>
-        <div>
-          <b>青杪的博客</b><br/>
-          <span style="font-size:12px;">一个分享日常博客和懒懒的站长。</span>
-        </div>
-      </a>
-    </td>
-    <td style="padding:8px 8px; width:320px;">
       <a href="https://blog.mysqil.com/" target="_blank" class="friend-card">
         <img src="http://q.qlogo.cn/headimg_dl?dst_uin=3231515355&spec=640&img_type=jpg" width="32" height="32" alt="头像"/>
         <div>
@@ -208,26 +199,6 @@
       </a>
     </td>
   </tr>
-  </tr>
-  <tr>
-    <td style="padding:8px 8px; width:320px;">
-      <a href="https://vtdd.vip" target="_blank" class="friend-card">
-        <img src="https://vtdd.vip/_astro/lx.U15Ju0Ce_1mLhMp.webp" width="32" height="32" alt="zero头像"/>
-        <div>
-          <b>zero</b><br/>
-          <span style="font-size:12px;">生命是一座迂回的迷宫,除了记忆,我们一无所有。</span>
-        </div>
-      </a>
-    </td>
-    <td style="padding:8px 8px; width:320px;">
-      <a href="https://www.almango.cn/" target="_blank" class="friend-card">
-        <img src="https://www.almango.cn/img/favicon.png" width="32" height="32" alt="Almango头像"/>
-        <div>
-          <b>Almango</b><br/>
-          <span style="font-size:12px;">天真永不消逝，浪漫至死不渝。</span>
-        </div>
-      </a>
-    </td>
   </tr>
 </table>
 

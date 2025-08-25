@@ -2,7 +2,6 @@
 
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
-import Comments from "@components/widget/Comments.svelte";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
@@ -24,3 +23,19 @@ const { Content } = await render(friendsPost);
         </div>
     </div>
 </MainGridLayout>
+
+<script src="https://giscus.app/client.js"
+        data-repo="SETIX-A/Fuwari"
+        data-repo-id="R_kgDOPhxhVA"
+        data-category="General"
+        data-category-id="DIC_kwDOPhxhVM4CujcW"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="zh-CN"
+        crossorigin="anonymous"
+        async>
+</script>

@@ -43,7 +43,7 @@
               "state": {
                 "file": "content/posts/Sleep_log.md",
                 "mode": "source",
-                "source": true
+                "source": false
               },
               "icon": "lucide-file",
               "title": "Sleep_log"
@@ -200,13 +200,15 @@
   },
   "active": "6c970a77ef55ef0b",
   "lastOpenFiles": [
+    "content/posts/markdown.md",
     "content/posts/markdown-extended.md",
+    "content/posts/hello1.md",
+    "content/posts/expressive-code.md",
+    "content/posts/draft.md",
+    "content/posts/guide/index.md",
+    "content/posts/guide/cover.jpg",
     "content/posts/Sleep_log.md",
     "content/posts/video.md",
-    "content/posts/draft.md",
-    "content/posts/expressive-code.md",
-    "content/posts/hello1.md",
-    "content/posts/markdown.md",
     "pages/source",
     "styles/comments.css",
     "content/spec/about.md",

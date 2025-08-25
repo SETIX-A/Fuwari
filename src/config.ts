@@ -44,6 +44,11 @@ export const navBarConfig: NavBarConfig = {
 		{ name: "首页", url: "/" }, // LinkPreset.Home
 		{ name: "归档", url: "/archive" }, // LinkPreset.Archive
 		{ name: "关于", url: "/about" },
+		{
+			name: "友链",
+			url: "friends/", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+			external: false, // Show an external link icon and will open in a new tab
+		},
 	],
 };
 

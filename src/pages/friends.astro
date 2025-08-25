@@ -2,7 +2,6 @@
 
 import { getEntry, render } from "astro:content";
 import Markdown from "@components/misc/Markdown.astro";
-import Comments from "@src/pages/posts/[...slug].astro";
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import MainGridLayout from "../layouts/MainGridLayout.astro";
@@ -23,5 +22,4 @@ const { Content } = await render(friendsPost);
             </Markdown>
         </div>
     </div>
-<Comments client:only="svelte"></Comments>
 </MainGridLayout>

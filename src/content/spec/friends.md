@@ -23,14 +23,14 @@
 }
 .friend-card img {
   margin-left: 20px;           /* 保证头像紧贴卡片左侧 */
-  margin-right: 8px;        /* 头像与文字间距 */
+  margin-right: 20px;        /* 头像与文字间距 */
 }
 </style>
 
 <table style="border-collapse:separate; border-spacing:0 10px;">
 <tr>
     <td style="padding:8px 8px; width:320px;">
-      <a href="https://blog.strarry.top" target="_blank" class="friend-card">
+      <a href="https://blog.sakura.ink/" target="_blank" class="friend-card">
         <img src="https://q2.qlogo.cn/headimg_dl?dst_uin=2731443459&spec=5" width="32" height="32" alt="星辰の笔记头像"/>
         <div>
           <b>鈴奈咲桜のBlog</b><br/>

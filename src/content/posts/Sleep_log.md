@@ -169,6 +169,7 @@ new Notice(`🛌 已记录睡觉时间: ${bedTime}`, 3000);
 
 点这个，快速到底部，手机用户有救了。[跳转至代码末尾](#结语)
 
+````
 ```dataviewjs
 // --- 配置 ---
 // 1. 请在这里准确填入您的睡眠记录文件名或完整路径
@@ -188,8 +189,8 @@ const processAndRender = () => {
         return; // 提前退出
     }
 
-    // 当前日期（固定为2025-08-25，以匹配当前上下文）
-    const currentDate = dv.date("2025-08-25");
+    // 当前日期（固定为2025-08-24）
+    const currentDate = dv.date("2025-08-24");
 
     // 检测 iOS 设备
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -361,13 +362,13 @@ const processAndRender = () => {
                 .slice(0, 12)
         );
 
-        // 最近7天数据（从2025-08-25向前推7天）
+        // 最近7天数据（从2025-08-24向前推7天）
         const sevenDaysAgo = currentDate.minus({ days: 7 });
         const recent7DaysRecords = records.filter(r => r.date >= sevenDaysAgo && r.date <= currentDate);
         const recent7DaysData = groupBy(recent7DaysRecords, r => r.date.toFormat("MM-dd"));
         const sevenDayAvg = calculateAverages(recent7DaysRecords);
 
-        // 最近30天数据（从2025-08-25向前推30天）
+        // 最近30天数据（从2025-08-24向前推30天）
         const thirtyDaysAgo = currentDate.minus({ days: 30 });
         const recent30DaysRecords = records.filter(r => r.date >= thirtyDaysAgo && r.date <= currentDate);
         const recent30DaysData = groupBy(recent30DaysRecords, r => r.date.toFormat("MM-dd"));
@@ -453,7 +454,7 @@ const processAndRender = () => {
                     const wd = calculateDistribution(data[key], 'waketime');
                     Object.keys(bd).concat(Object.keys(wd)).forEach(bucket => {
                         if (!allLabels.includes(bucket)) allLabels.push(bucket);
-                    }
+                    });
                 });
             }
 
@@ -640,6 +641,7 @@ loadScripts()
         processAndRender();
     });
 ```
+````
 
 **提示**：代码会从CDN加载Chart.js，确保你的Obsidian有网络权限。如果图表不显示，检查文件路径和数据格式。
 

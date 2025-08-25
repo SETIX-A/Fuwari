@@ -6,7 +6,7 @@ tags:
   - Obsidian
   - 演示
 category: Obsidian
-draft: false
+draft: true
 ---
 ### 关于你的原文章反馈和改进点
 你的原文章已经很不错了，尤其是作为第一次写博客！内容详实、代码完整、结构清晰。但确实有一些可以优化的地方，我在重写时做了这些调整：

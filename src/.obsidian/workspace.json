@@ -42,7 +42,7 @@
               "type": "markdown",
               "state": {
                 "file": "content/posts/Sleep_log.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
@@ -195,27 +195,37 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "bases:创建新数据库": false,
-      "templater-obsidian:Templater": false
+      "bases:创建新数据库": false
     }
   },
   "active": "6c970a77ef55ef0b",
   "lastOpenFiles": [
+    "content/posts/markdown-extended.md",
+    "content/posts/Sleep_log.md",
+    "assets/images/sleep-1.jpeg",
+    "assets/images/sleep-2.jpg",
+    "assets/images/IMG_6328.jpg.sb-591b44d7-cgkkWd",
+    "assets/images/ios.jpeg.sb-591b44d7-nQwvWF",
+    "assets/images/IMG_6328.jpg.sb-591b44d7-8WfwkM",
+    "assets/images/IMG_6328.jpg",
+    "assets/images/demo-banner.jpg",
+    "assets/images/ios.jpeg",
+    "assets/images/IOS.jpeg",
+    "assets/images/Image.jpeg.sb-591b44d7-pi0Vi8",
+    "assets/images/Image.jpeg",
+    "assets/images/sleep-ios1.PNG",
+    "assets/images/sleep-ios2.PNG",
+    "assets/images/sleep-ios.PNG",
     "content/spec/friends.md",
     "content/spec/fi",
     "content/posts/markdown.md",
-    "content/posts/markdown-extended.md",
     "content/posts/hello1.md",
     "content/posts/expressive-code.md",
     "content/posts/draft.md",
     "content/posts/guide/index.md",
-    "content/posts/guide/cover.jpg",
-    "content/posts/Sleep_log.md",
     "content/posts/video.md",
     "pages/source",
     "styles/comments.css",
-    "content/spec/about.md",
-    "assets/images/demo-banner.jpg",
-    "assets/images/demo-avatar.png"
+    "content/spec/about.md"
   ]
 }

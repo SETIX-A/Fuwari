@@ -139,8 +139,34 @@
 .collapsed {
     height: var(--collapsedHeight);
 }
-#comments {
-  margin-top: 20px;
-  padding: 20px;
-  border-top: 1px solid #ddd;
+
+/* 调整博文内容字体大小 */
+.custom-md {
+  font-size: 1rem; /* 默认基础字体大小 */
+  line-height: 1.8; /* 行高，提高可读性 */
+}
+
+/* 调整博文中的段落字体 */
+.custom-md p {
+  font-size: 1.06rem;
+  margin-bottom: 1rem;
+}
+
+/* 响应式调整 - 在小屏幕上减小字体 */
+@media (max-width: 768px) {
+  .custom-md {
+    font-size: 0.95rem;
+  }
+  
+  .custom-md h1 {
+    font-size: 1.75rem;
+  }
+  
+  .custom-md h2 {
+    font-size: 1.5rem;
+  }
+  
+  .custom-md h3 {
+    font-size: 1.25rem;
+  }
 }

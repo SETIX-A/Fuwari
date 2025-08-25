@@ -42,7 +42,7 @@
               "type": "markdown",
               "state": {
                 "file": "content/posts/Sleep_log.md",
-                "mode": "preview",
+                "mode": "source",
                 "source": true
               },
               "icon": "lucide-file",
@@ -200,16 +200,16 @@
   },
   "active": "6c970a77ef55ef0b",
   "lastOpenFiles": [
-    "content/posts/hello1.md",
-    "content/posts/markdown.md",
+    "content/posts/markdown-extended.md",
     "content/posts/Sleep_log.md",
-    "pages/source",
-    "styles/comments.css",
+    "content/posts/video.md",
     "content/posts/draft.md",
     "content/posts/expressive-code.md",
+    "content/posts/hello1.md",
+    "content/posts/markdown.md",
+    "pages/source",
+    "styles/comments.css",
     "content/spec/about.md",
-    "content/posts/video.md",
-    "content/posts/markdown-extended.md",
     "assets/images/demo-banner.jpg",
     "assets/images/demo-avatar.png"
   ]

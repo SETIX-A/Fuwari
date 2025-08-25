@@ -21,6 +21,7 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	series?: string;
 	headings?: MarkdownHeading[];
 }
 
@@ -30,6 +31,7 @@ const {
 	description,
 	lang,
 	setOGTypeArticle,
+	series,
 	headings = [],
 } = Astro.props;
 const hasBannerCredit =
@@ -57,6 +59,17 @@ const mainPanelTop = siteConfig.banner.enable
                   src={siteConfig.banner.src} position={siteConfig.banner.position}
     >
     </ImageWrapper>
+    <!-- Banner overlay text -->
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="text-center px-4 select-none">
+            <div class="text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)] text-3xl md:text-5xl font-extrabold tracking-wide">
+                Find the Signal in the Noise
+            </div>
+            <div class="mt-3 text-white/85 drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] text-sm md:text-base">
+                Welcome to my blog
+            </div>
+        </div>
+    </div>
 </div>}
 
 <!-- Main content -->
@@ -80,7 +93,7 @@ const mainPanelTop = siteConfig.banner.enable
             </a>}
 
 
-            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" series={ series } headings={headings}></SideBar>
 
             <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
                 <div id="content-wrapper" class="onload-animation">
@@ -122,4 +135,5 @@ const mainPanelTop = siteConfig.banner.enable
         {!siteConfig.toc.enable && <div id="toc"></div>}
     </div>
 </div>
+<script defer src="https://cloud.umami.is/script.js" data-website-id="0db8920c-7ed8-4d38-8d2c-52d3d726a845"></script>
 </Layout>

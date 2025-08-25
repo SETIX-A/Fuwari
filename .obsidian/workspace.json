@@ -1,0 +1,174 @@
+{
+  "main": {
+    "id": "8a2748eb812c8c80",
+    "type": "split",
+    "children": [
+      {
+        "id": "243f76cb0bee1d25",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "539b1229e4c35a3c",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "src/assets/images/demo-banner.jpg"
+              },
+              "icon": "lucide-image",
+              "title": "demo-banner"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "436f8df387144dca",
+    "type": "split",
+    "children": [
+      {
+        "id": "c99c149bccb04d9f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "aa1ce7a0065da169",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "84d286f97e2864c0",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "b782ce8a1a3911e6",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "5e1677e7b1bf2990",
+    "type": "split",
+    "children": [
+      {
+        "id": "bc162e358a128722",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "48d3aca94ddbd7a4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "src/assets/images/demo-banner.jpg",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "demo-banner 的反向链接列表"
+            }
+          },
+          {
+            "id": "dce5e84bc6975e0a",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "src/assets/images/demo-banner.jpg",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "demo-banner 的出链列表"
+            }
+          },
+          {
+            "id": "d06ee17a3725041b",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "d5a50054dd295c5a",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "src/assets/images/demo-banner.jpg",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "demo-banner 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false,
+      "bases:创建新数据库": false
+    }
+  },
+  "active": "539b1229e4c35a3c",
+  "lastOpenFiles": [
+    "src/assets/images/demo-avatar.png"
+  ]
+}

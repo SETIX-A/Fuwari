@@ -2,9 +2,12 @@
 title: Expressive Code 示例
 published: 2025-08-20
 description: 使用 Expressive Code 后，代码块在 Markdown 中的外观示例。
-tags: [Markdown, 博客, 演示]
+tags:
+  - Markdown
+  - 博客
+  - 演示
 category: 示例
-draft: false
+draft: true
 ---
 
 在这里，我们将探讨使用 [Expressive Code](https://expressive-code.com/) 时代码块的外观。所提供的示例均基于官方文档，您可以参考官方文档以获取更多详情。

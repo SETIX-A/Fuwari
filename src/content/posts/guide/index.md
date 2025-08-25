@@ -1,11 +1,14 @@
 ---
 title: 写作指南
 published: 2025-08-20
-description: "如何使用此博客模板。"
-image: "./cover.jpg"
-tags: ["Fuwari", "博客", "定制"]
+description: 如何使用此博客模板。
+image: ./cover.jpg
+tags:
+  - Fuwari
+  - 博客
+  - 定制
 category: 指南
-draft: false
+draft: true
 ---
 
 该博客基于 [Astro](https://astro.build/) 构建。对于本指南中未提及的事项，您或许可以在 [Astro 官方文档](https://docs.astro.build/) 中找到答案。

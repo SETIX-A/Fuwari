@@ -1,0 +1,68 @@
+/*
+ * 选项 2: 极简无缝风 (Minimal & Seamless)
+ * 风格: 去掉外层容器感，让评论区与页面背景融为一体。
+ */
+
+/* 整体框架 - 透明背景，无边框 */
+.gsc-frame {
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	margin-top: 2rem !important;
+}
+
+/* 评论输入区 */
+.gsc-comment-box {
+	border: 1px solid #d0d7de !important;
+	border-radius: 8px !important;
+	padding: 1rem !important;
+	background-color: #fff !important;
+}
+.gsc-comment-box-textarea {
+	background-color: #f6f8fa !important;
+	color: #24292f !important;
+	border-color: #d0d7de !important;
+	border-radius: 6px !important;
+}
+
+/* 按钮样式 */
+.gsc-comment-box-signin,
+.gsc-comment-box-submit {
+	background-color: #425aef !important;
+	color: #fff !important;
+	border-color: #425aef !important;
+	border-radius: 6px !important;
+}
+
+/* 评论列表 */
+.gsc-timeline {
+	margin-top: 1.5rem !important;
+}
+
+/* 单条评论 - 独立卡片化 */
+.gsc-comment {
+	background-color: #fff !important;
+	border: 1px solid #d0d7de !important;
+	border-radius: 8px !important;
+	padding: 1rem 1.5rem !important;
+	margin-bottom: 1rem !important;
+}
+.gsc-comment:last-child {
+	margin-bottom: 0 !important;
+}
+
+/* 评论作者 */
+.gsc-comment-author {
+	color: #24292f !important;
+	font-weight: 600 !important;
+}
+
+/* 评论内容 */
+.gsc-comment-body {
+	color: #57606a !important;
+}
+.gsc-comment-body a {
+	color: #425aef !important;
+	text-decoration: none !important;
+	border-bottom: 1px solid #425aef;
+}

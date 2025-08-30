@@ -214,475 +214,274 @@ if (page && page.file && page.file.lists && page.file.lists.length > 0) {
 点这个，快速到底部，手机用户有救了。[跳转至代码末尾](#结语)
 
 ````
+```dataviewjs
 // --- 配置 ---
-// 1. 请在这里准确填入您的睡眠记录文件名或完整路径
 const FILE_PATH = "睡眠日记-2025.md";
 // --- 配置结束 ---
 
 // ------------------------------------------------------------------
-// --- 核心逻辑：动态加载 Chart.js 并渲染所有内容 ---
+// --- 辅助函数与常量 ---
 // ------------------------------------------------------------------
 
-// 我们把所有的数据处理和渲染，都包在一个函数里
-const processAndRender = () => {
-    const page = dv.page(FILE_PATH);
+const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
+const formatDurationFromMs = (ms) => {
+    if (isNaN(ms) || ms < 0) return "无效时长";
+    const totalMinutes = Math.round(ms / (1000 * 60));
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}时 ${minutes}分`;
+};
+
+const formatAvgDurationHours = (ms) => {
+    if (isNaN(ms) || ms < 0) return "无效";
+    return (ms / (1000 * 60 * 60)).toFixed(2);
+};
+
+const groupBy = (data, keyFn) => {
+    return data.reduce((acc, item) => {
+        const key = keyFn(item);
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(item);
+        return acc;
+    }, {});
+};
+
+const calculateAverages = (group) => {
+    const total = group.length;
+    if (total === 0) return null;
+    const avgDurationMs = group.reduce((sum, r) => sum + r.durationMillis, 0) / total;
+
+    const calculateMeanTime = (times) => {
+        if (times.length === 0) return null;
+        const radians = times.map(t => (t / 24) * 2 * Math.PI);
+        const sinSum = radians.reduce((sum, r) => sum + Math.sin(r), 0) / times.length;
+        const cosSum = radians.reduce((sum, r) => sum + Math.cos(r), 0) / times.length;
+        let meanAngle = Math.atan2(sinSum, cosSum);
+        if (meanAngle < 0) meanAngle += 2 * Math.PI;
+        let meanHours = (meanAngle / (2 * Math.PI)) * 24;
+        const hours = Math.floor(meanHours);
+        const minutes = Math.round((meanHours - hours) * 60);
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    };
+
+    return {
+        "记录天数": total,
+        "平均入睡": calculateMeanTime(group.filter(r => r.bedtimeHour !== undefined).map(r => r.bedtimeHour)),
+        "平均起床": calculateMeanTime(group.filter(r => r.waketimeHour !== undefined).map(r => r.waketimeHour)),
+        "平均时长": formatDurationFromMs(avgDurationMs),
+        "avgDurationMs": avgDurationMs
+    };
+};
+
+// ------------------------------------------------------------------
+// --- 1. 数据解析模块 ---
+// ------------------------------------------------------------------
+
+function parseSleepData(page) {
     if (!page || !page.file || !page.file.lists || page.file.lists.length === 0) {
         dv.paragraph("❌ **错误：** 找不到文件或文件中没有数据。");
-        return; // 提前退出
+        return null;
     }
-
-    // 动态获取当前日期
-    const currentDate = dv.date('now');
-
-    // 检测 iOS 设备
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-    // 注入 CSS 样式以优化 iOS 显示
-    const style = document.createElement('style');
-    style.textContent = `
-        .dataview.container { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
-        canvas { width: 100% !important; max-height: 350px !important; }
-        .sleep-record-count {
-            font-size: 0.8em; /* 调整字体大小，使其看起来像小字 */
-            color: var(--text-muted); /* 使用主题的柔和颜色 */
-            text-align: left;
-            margin-top: 15px; /* 与上方图表保持一些间距 */
-        }
-        @media (max-width: 600px) {
-            canvas { max-height: 300px !important; }
-        }
-    `;
-    document.head.appendChild(style);
-
-    // 1. 数据提取和处理
-    const records = page.file.lists
+    return page.file.lists
         .where(item => item.date && (item.duration || (item.bed && item.wake)))
         .map(item => {
             try {
                 const dateStr = item.date.toString().substring(0, 10);
-                let durationMillis;
-                let bedtimeHour, waketimeHour;
+                let durationMillis, bedtimeHour, waketimeHour;
 
-                // 优先使用 duration 字段
                 if (item.duration) {
-                    const durationStr = item.duration.toString();
-                    const [hours, minutes] = durationStr.split(':').map(Number);
-                    if (!isNaN(hours) && !isNaN(minutes)) {
-                        durationMillis = (hours * 60 + minutes) * 60 * 1000;
-                    } else {
-                        return null; // 无效 duration 格式
-                    }
-                    // 如果有 bed 和 wake，提取小时用于分布
-                    if (item.bed && item.wake) {
-                        const bedtime = dv.date(dateStr + "T" + item.bed.toString());
-                        const waketime = dv.date(dateStr + "T" + item.wake.toString());
-                        if (!bedtime || !waketime) return null;
-                        bedtimeHour = bedtime.hour + bedtime.minute / 60; // 包含分钟的小数形式
-                        waketimeHour = waketime.hour + waketime.minute / 60;
-                    }
+                    const [hours, minutes] = item.duration.toString().split(':').map(Number);
+                    if (isNaN(hours) || isNaN(minutes)) return null;
+                    durationMillis = (hours * 60 + minutes) * 60 * 1000;
                 } else {
-                    // 没有 duration 时，使用 bed 和 wake 计算
-                    const bedtimeStr = item.bed.toString();
-                    const waketimeStr = item.wake.toString();
-                    const bedtime = dv.date(dateStr + "T" + bedtimeStr);
-                    const waketime = dv.date(dateStr + "T" + waketimeStr);
+                    const bedtime = dv.date(`${dateStr}T${item.bed}`);
+                    let waketime = dv.date(`${dateStr}T${item.wake}`);
                     if (!bedtime || !waketime) return null;
-                    let bedtimeMillis = bedtime.toMillis();
-                    let waketimeMillis = waketime.toMillis();
-                    if (waketimeMillis <= bedtimeMillis) {
-                        waketimeMillis += 24 * 60 * 60 * 1000;
-                    }
-                    durationMillis = waketimeMillis - bedtimeMillis;
-                    bedtimeHour = bedtime.hour + bedtime.minute / 60;
-                    waketimeHour = waketime.hour + waketime.minute / 60;
+                    if (waketime <= bedtime) waketime = waketime.plus({ days: 1 });
+                    durationMillis = waketime.toMillis() - bedtime.toMillis();
                 }
 
-                return {
-                    date: dv.date(dateStr),
-                    durationMillis: durationMillis,
-                    bedtimeHour: bedtimeHour, // 可能为 undefined
-                    waketimeHour: waketimeHour // 可能为 undefined
-                };
-            } catch (e) { return null; }
-        })
-        .filter(item => item !== null)
-        .values;
-
-    // 我们不再使用 dv.duration()，而是创建自己的格式化函数
-    const formatDurationFromMs = (ms) => {
-        if (isNaN(ms) || ms < 0) return "无效时长";
-        const totalMinutes = Math.round(ms / (1000 * 60));
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-        return `${hours}时 ${minutes}分`;
-    };
-
-    // 格式化平均睡眠时长为小时（小数形式，如 6.50）
-    const formatAvgDurationHours = (ms) => {
-        if (isNaN(ms) || ms < 0) return "无效";
-        return (ms / (1000 * 60 * 60)).toFixed(2);
-    };
-
-    // 分组与计算函数
-    const groupBy = (data, keyFn) => {
-        return data.reduce((acc, item) => {
-            const key = keyFn(item);
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(item);
-            return acc;
-        }, {});
-    };
-
-    // 计算平均时间（使用角度平均法）
-    const calculateAverages = (group) => {
-        const total = group.length;
-        if (total === 0) return null;
-
-        const avgDurationMs = group.reduce((sum, r) => sum + r.durationMillis, 0) / total;
-
-        // 计算平均入睡和起床时间（角度平均法）
-        const validBedtimes = group.filter(r => r.bedtimeHour !== undefined);
-        const validWaketimes = group.filter(r => r.waketimeHour !== undefined);
-
-        const calculateMeanTime = (times) => {
-            if (times.length === 0) return null;
-            // 将时间（小时）转换为角度（24小时 = 360°）
-            const radians = times.map(t => (t / 24) * 2 * Math.PI);
-            const sinSum = radians.reduce((sum, r) => sum + Math.sin(r), 0) / times.length;
-            const cosSum = radians.reduce((sum, r) => sum + Math.cos(r), 0) / times.length;
-            // 计算平均角度
-            let meanAngle = Math.atan2(sinSum, cosSum);
-            if (meanAngle < 0) meanAngle += 2 * Math.PI;
-            // 转换回小时
-            let meanHours = (meanAngle / (2 * Math.PI)) * 24;
-            if (meanHours >= 24) meanHours -= 24;
-            // 格式化为 HH:mm
-            const hours = Math.floor(meanHours);
-            const minutes = Math.round((meanHours - hours) * 60);
-            return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
-        };
-
-        return {
-            "记录天数": total,
-            "平均入睡": calculateMeanTime(validBedtimes.map(r => r.bedtimeHour)),
-            "平均起床": calculateMeanTime(validWaketimes.map(r => r.waketimeHour)),
-            "平均时长": formatDurationFromMs(avgDurationMs),
-            "avgDurationMs": avgDurationMs
-        };
-    };
-
-    // 计算时间分布（入睡或起床）
-    const calculateDistribution = (group, type) => {
-        const hours = type === 'bedtime' ? group.map(r => r.bedtimeHour) : group.map(r => r.waketimeHour);
-        const validHours = hours.filter(h => h !== undefined);
-        const dist = {};
-        validHours.forEach(h => {
-            const bucket = `${String(Math.floor(h)).padStart(2, '0')}:00`;
-            dist[bucket] = (dist[bucket] || 0) + 1;
-        });
-        return dist;
-    };
-
-    // 渲染报告
-    dv.header(2, "");
-    if (records.length === 0) {
-        dv.paragraph("✅ 文件已找到，但未能解析出任何有效数据行。请严格检查您的数据格式是否为：`- [date:: YYYY-MM-DD], [duration:: HH:mm]` 或 `- [date:: YYYY-MM-DD], [bed:: HH:mm], [wake:: HH:mm]`");
-    } else {
-        // 分组并限制数据
-        const yearlyData = groupBy(records, r => r.date.year);
-        const monthlyData = groupBy(records, r => r.date.toFormat("yyyy-'年' MM'-月'"));
-
-        // 限制最近12个月和12年
-        const limitedMonthlyData = Object.fromEntries(
-            Object.entries(monthlyData)
-                .sort((a, b) => b[0].localeCompare(a[0]))
-                .slice(0, 12)
-        );
-        const limitedYearlyData = Object.fromEntries(
-            Object.entries(yearlyData)
-                .sort((a, b) => b[0].localeCompare(a[0]))
-                .slice(0, 12)
-        );
-
-        // 最近7天数据（从当前日期向前推7天）
-        const sevenDaysAgo = currentDate.minus({ days: 7 });
-        const recent7DaysRecords = records.filter(r => r.date >= sevenDaysAgo && r.date <= currentDate);
-        const recent7DaysData = groupBy(recent7DaysRecords, r => r.date.toFormat("MM-dd"));
-        const sevenDayAvg = calculateAverages(recent7DaysRecords);
-
-        // 最近30天数据（从当前日期向前推30天）
-        const thirtyDaysAgo = currentDate.minus({ days: 30 });
-        const recent30DaysRecords = records.filter(r => r.date >= thirtyDaysAgo && r.date <= currentDate);
-        const recent30DaysData = groupBy(recent30DaysRecords, r => r.date.toFormat("MM-dd"));
-        const thirtyDayAvg = calculateAverages(recent30DaysRecords);
-
-        // --- 渲染表格的模板函数 (已修改) ---
-        const renderTable = (header, data) => {
-            const rows = Object.keys(data).sort((a, b) => b.localeCompare(a)).map(key => {
-                const avg = calculateAverages(data[key]);
-                // 修改这里，去掉了 avg.记录天数
-                return [avg.平均时长, avg.平均入睡 || "无数据", avg.平均起床 || "无数据", key];
-            });
-            // 修改这里，去掉了表头的 "记录天数"
-            dv.table(["平均时长", "平均入睡", "平均起床", header], rows);
-        };
-
-        // --- 渲染平均睡眠时长柱状图的函数 ---
-        const renderAvgChart = (data, title) => {
-            const labels = Object.keys(data).sort((a, b) => a.localeCompare(b));
-            const chartValues = labels.map(key => {
-                const avg = calculateAverages(data[key]);
-                return (avg.avgDurationMs / (1000 * 60 * 60)).toFixed(2);
-            });
-            const canvas = dv.el("canvas");
-            canvas.style.width = '100%';
-            canvas.style.height = '300px';
-            canvas.width = window.innerWidth * window.devicePixelRatio;
-            canvas.height = 300 * window.devicePixelRatio;
-            dv.container.style.width = '100%';
-            dv.container.appendChild(canvas);
-            const chartConfig = {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `${title} 平均睡眠时长 (小时)`,
-                        data: chartValues,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { beginAtZero: true, title: { display: true, text: '小时' } },
-                        x: {
-                            title: { display: true, text: title === '月' ? '月份' : '年份' },
-                            ticks: {
-                                font: { size: isIOS ? 10 : 12 },
-                                maxRotation: isIOS ? 45 : 0,
-                                autoSkip: true
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: isIOS ? 10 : 12 } } },
-                        tooltip: { bodyFont: { size: isIOS ? 10 : 12 } }
-                    },
-                    animation: { duration: isIOS ? 0 : 1000 }
+                if (item.bed) {
+                    const bedtime = dv.date(`${dateStr}T${item.bed}`);
+                    if (bedtime) bedtimeHour = bedtime.hour + bedtime.minute / 60;
                 }
-            };
-            new Chart(canvas.getContext('2d'), chartConfig);
-        };
+                if (item.wake) {
+                    const waketime = dv.date(`${dateStr}T${item.wake}`);
+                    if (waketime) waketimeHour = waketime.hour + waketime.minute / 60;
+                }
 
-        // --- 渲染堆叠入睡/起床时间分布图（最近30天汇总） ---
-        const renderStackedDistChart = (data, title, isRecent30Days = false) => {
-            const allLabels = [];
-            let bedtimeDist, waketimeDist;
-
-            if (isRecent30Days) {
-                // 对于最近30天，汇总所有记录的入睡和起床时间分布
-                bedtimeDist = calculateDistribution(data, 'bedtime');
-                waketimeDist = calculateDistribution(data, 'waketime');
-                Object.keys(bedtimeDist).concat(Object.keys(waketimeDist)).forEach(bucket => {
-                    if (!allLabels.includes(bucket)) allLabels.push(bucket);
-                });
-            } else {
-                // 对于月或年，分别计算每个分组的分布
-                Object.keys(data).forEach(key => {
-                    const bd = calculateDistribution(data[key], 'bedtime');
-                    const wd = calculateDistribution(data[key], 'waketime');
-                    Object.keys(bd).concat(Object.keys(wd)).forEach(bucket => {
-                        if (!allLabels.includes(bucket)) allLabels.push(bucket);
-                    });
-                });
+                return { date: dv.date(dateStr), durationMillis, bedtimeHour, waketimeHour };
+            } catch (e) {
+                console.warn(`[DataviewJS Sleep Report] 解析数据失败，已跳过此行: ${item.text}`, e);
+                return null;
             }
+        })
+        .filter(item => item !== null && !isNaN(item.durationMillis))
+        .values;
+}
 
-            const sortedLabels = allLabels.sort();
-            const canvas = dv.el("canvas");
-            canvas.style.width = '100%';
-            canvas.style.height = '300px';
-            canvas.width = window.innerWidth * window.devicePixelRatio;
-            canvas.height = 300 * window.devicePixelRatio;
-            dv.container.style.width = '100%';
-            dv.container.appendChild(canvas);
-            const chartData = {
-                labels: sortedLabels,
-                datasets: isRecent30Days ? [
-                    {
-                        label: '入睡时间',
-                        data: sortedLabels.map(label => bedtimeDist[label] || 0),
-                        backgroundColor: 'rgba(54, 162, 235, 0.4)',
-                        stack: 'Stack 0'
-                    },
-                    {
-                        label: '起床时间',
-                        data: sortedLabels.map(label => waketimeDist[label] || 0),
-                        backgroundColor: 'rgba(75, 192, 192, 0.4)',
-                        stack: 'Stack 0'
-                    }
-                ] : [
-                    ...Object.keys(data).sort((a, b) => a.localeCompare(b)).map((key, i) => ({
-                        label: `${key} 入睡`,
-                        data: sortedLabels.map(label => calculateDistribution(data[key], 'bedtime')[label] || 0),
-                        backgroundColor: `rgba(54, 162, 235, ${0.4 - i * 0.1})`,
-                        stack: `Stack ${i}`
-                    })),
-                    ...Object.keys(data).sort((a, b) => a.localeCompare(b)).map((key, i) => ({
-                        label: `${key} 起床`,
-                        data: sortedLabels.map(label => calculateDistribution(data[key], 'waketime')[label] || 0),
-                        backgroundColor: `rgba(75, 192, 192, ${0.4 - i * 0.1})`,
-                        stack: `Stack ${i}`
-                    }))
-                ]
-            };
-            const chartConfig = {
-                type: 'bar',
-                data: chartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            stacked: true,
-                            title: { display: true, text: '时间' },
-                            ticks: {
-                                font: { size: isIOS ? 10 : 12 },
-                                maxRotation: isIOS ? 45 : 0,
-                                autoSkip: true
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            title: { display: true, text: '次数' },
-                            ticks: { font: { size: isIOS ? 10 : 12 } }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: isIOS ? 10 : 12 } } },
-                        tooltip: { bodyFont: { size: isIOS ? 10 : 12 } }
-                    },
-                    animation: { duration: isIOS ? 0 : 1000 }
-                }
-            };
-            new Chart(canvas.getContext('2d'), chartConfig);
-        };
+// ------------------------------------------------------------------
+// --- 2. 核心统计计算模块 ---
+// ------------------------------------------------------------------
 
-        // --- 渲染睡眠时长趋势折线图（7天或30天） ---
-        const renderTrendChart = (data, title, days) => {
-            const labels = Object.keys(data).sort((a, b) => a.localeCompare(b));
-            const chartValues = labels.map(key => {
-                const avg = calculateAverages(data[key]);
-                return (avg.avgDurationMs / (1000 * 60 * 60)).toFixed(2);
-            });
-            const canvas = dv.el("canvas");
-            canvas.style.width = '100%';
-            canvas.style.height = '300px';
-            canvas.width = window.innerWidth * window.devicePixelRatio;
-            canvas.height = 300 * window.devicePixelRatio;
-            dv.container.style.width = '100%';
-            dv.container.appendChild(canvas);
-            const chartConfig = {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: `${title} 睡眠时长趋势 (小时)`,
-                        data: chartValues,
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        borderWidth: 2,
-                        fill: false,
-                        tension: 0.3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: '小时' },
-                            ticks: { font: { size: isIOS ? 10 : 12 } }
-                        },
-                        x: {
-                            title: { display: true, text: '日期' },
-                            ticks: {
-                                font: { size: isIOS ? 10 : 12 },
-                                maxRotation: isIOS ? 45 : 0,
-                                autoSkip: days === 7 ? false : true // 7天显示所有标签
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: isIOS ? 10 : 12 } } },
-                        tooltip: { bodyFont: { size: isIOS ? 10 : 12 } }
-                    },
-                    animation: { duration: isIOS ? 0 : 1000 }
-                }
-            };
-            new Chart(canvas.getContext('2d'), chartConfig);
-        };
+function calculateAllStatistics(records) {
+    const currentDate = dv.date('now');
+    const sevenDaysAgo = currentDate.minus({ days: 7 });
+    const thirtyDaysAgo = currentDate.minus({ days: 30 });
 
-        // --- 按顺序渲染所有内容 ---
-        dv.header(3, "");
-        dv.header(4, `近7天睡眠趋势 平均: ${sevenDayAvg ? formatAvgDurationHours(sevenDayAvg.avgDurationMs) : '无数据'}小时`);
-        renderTrendChart(recent7DaysData, "近7天", 7);
+    const stats = {
+        recent7DaysRecords: [],
+        recent30DaysRecords: [],
+        byMonth: {},
+        byYear: {},
+        totalRecords: records.length,
+    };
 
-        dv.header(3, "");
-        dv.header(4, `最近30天睡眠时长趋势 平均: ${thirtyDayAvg ? formatAvgDurationHours(thirtyDayAvg.avgDurationMs) : '无数据'}小时`);
-        renderTrendChart(recent30DaysData, "最近30天", 30);
-        dv.header(4, "最近30天入睡/起床时间分布 (堆叠)");
-        renderStackedDistChart(recent30DaysRecords, "最近30天", true);
+    for (const record of records) {
+        const recordDate = record.date;
+        if (recordDate.ts >= thirtyDaysAgo.ts && recordDate.ts <= currentDate.ts) {
+            stats.recent30DaysRecords.push(record);
+            if (recordDate.ts >= sevenDaysAgo.ts) {
+                stats.recent7DaysRecords.push(record);
+            }
+        }
+        const monthKey = recordDate.toFormat("yyyy-'年' MM'-月'");
+        if (!stats.byMonth[monthKey]) stats.byMonth[monthKey] = [];
+        stats.byMonth[monthKey].push(record);
 
-        dv.header(3, "按月统计");
-        renderTable("月份", limitedMonthlyData);
-        renderAvgChart(limitedMonthlyData, "月");
+        const yearKey = recordDate.year;
+        if (!stats.byYear[yearKey]) stats.byYear[yearKey] = [];
+        stats.byYear[yearKey].push(record);
+    }
 
-        dv.header(3, "按年统计");
-        renderTable("年份", limitedYearlyData);
-        renderAvgChart(limitedYearlyData, "年");
-        dv.header(4, "本年入睡/起床时间分布 (堆叠)");
-        renderStackedDistChart(limitedYearlyData, "年");
-        dv.header(4, "本年睡眠时长趋势");
-        renderTrendChart(limitedYearlyData, "年", 365);
+    stats.sevenDayAvg = calculateAverages(stats.recent7DaysRecords);
+    stats.thirtyDayAvg = calculateAverages(stats.recent30DaysRecords);
+    
+    stats.recent7DaysGrouped = groupBy(stats.recent7DaysRecords, r => r.date.toFormat("MM-dd"));
+    stats.recent30DaysGrouped = groupBy(stats.recent30DaysRecords, r => r.date.toFormat("MM-dd"));
 
-        // --- 新增：在最下方显示总记录条数 ---
-        dv.el('p', `🛌 睡眠记录共 ${records.length} 条`, { cls: 'sleep-record-count' });
+    stats.limitedMonthlyData = Object.fromEntries(Object.entries(stats.byMonth).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 12));
+    stats.limitedYearlyData = Object.fromEntries(Object.entries(stats.byYear).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 12));
+
+    return stats;
+}
+
+// ------------------------------------------------------------------
+// --- 3. 报告渲染模块 ---
+// ------------------------------------------------------------------
+
+const calculateDistribution = (group, type) => {
+    const hours = type === 'bedtime' ? group.map(r => r.bedtimeHour) : group.map(r => r.waketimeHour);
+    const validHours = hours.filter(h => h !== undefined);
+    const dist = {};
+    validHours.forEach(h => {
+        const bucket = `${String(Math.floor(h)).padStart(2, '0')}:00`;
+        dist[bucket] = (dist[bucket] || 0) + 1;
+    });
+    return dist;
+};
+
+const renderTable = (header, data) => {
+    const rows = Object.keys(data).sort((a, b) => b.localeCompare(a)).map(key => {
+        const avg = calculateAverages(data[key]);
+        return [avg.平均时长, avg.平均入睡 || "无数据", avg.平均起床 || "无数据", key];
+    });
+    dv.table(["平均时长", "平均入睡", "平均起床", header], rows);
+};
+
+const createChartCanvas = () => {
+    const canvas = dv.el("canvas");
+    canvas.style.width = '100%';
+    canvas.style.height = '300px';
+    canvas.width = window.innerWidth * window.devicePixelRatio;
+    canvas.height = 300 * window.devicePixelRatio;
+    dv.container.appendChild(canvas);
+    return canvas.getContext('2d');
+};
+
+const renderAvgChart = (data, title) => {
+    const labels = Object.keys(data).sort((a, b) => a.localeCompare(b));
+    const chartValues = labels.map(key => {
+        const avg = calculateAverages(data[key]);
+        return (avg.avgDurationMs / (1000 * 60 * 60)).toFixed(2);
+    });
+    const ctx = createChartCanvas();
+    new Chart(ctx, { type: 'bar', data: { labels: labels, datasets: [{ label: `${title} 平均睡眠时长 (小时)`, data: chartValues, backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: '小时' } } }, animation: { duration: IS_IOS ? 0 : 1000 } } });
+};
+
+const renderTrendChart = (data, title, days) => {
+    const labels = Object.keys(data).sort((a, b) => a.localeCompare(b));
+    const chartValues = labels.map(key => formatAvgDurationHours(calculateAverages(data[key]).avgDurationMs));
+    const ctx = createChartCanvas();
+    new Chart(ctx, { type: 'line', data: { labels: labels, datasets: [{ label: `${title} 睡眠时长趋势 (小时)`, data: chartValues, backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 99, 132, 1)', borderWidth: 2, fill: false, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, title: { display: true, text: '小时' } } }, animation: { duration: IS_IOS ? 0 : 1000 } } });
+};
+
+const renderStackedDistChart = (data, title) => {
+    const bedtimeDist = calculateDistribution(data, 'bedtime');
+    const waketimeDist = calculateDistribution(data, 'waketime');
+    const allLabels = [...new Set([...Object.keys(bedtimeDist), ...Object.keys(waketimeDist)])].sort();
+    const ctx = createChartCanvas();
+    new Chart(ctx, { type: 'bar', data: { labels: allLabels, datasets: [{ label: '入睡时间', data: allLabels.map(label => bedtimeDist[label] || 0), backgroundColor: 'rgba(54, 162, 235, 0.4)', stack: 'Stack 0' }, { label: '起床时间', data: allLabels.map(label => waketimeDist[label] || 0), backgroundColor: 'rgba(75, 192, 192, 0.4)', stack: 'Stack 0' }] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } }, animation: { duration: IS_IOS ? 0 : 1000 } } });
+};
+
+function renderReport(stats) {
+    if (stats.totalRecords === 0) {
+        dv.paragraph("✅ 文件已找到，但未能解析出任何有效数据行。请检查数据格式。");
+        return;
+    }
+    
+    dv.header(4, `近7天睡眠趋势 平均: ${stats.sevenDayAvg ? formatAvgDurationHours(stats.sevenDayAvg.avgDurationMs) : '无数据'}小时`);
+    renderTrendChart(stats.recent7DaysGrouped, "近7天", 7);
+
+    dv.header(4, `最近30天睡眠时长趋势 平均: ${stats.thirtyDayAvg ? formatAvgDurationHours(stats.thirtyDayAvg.avgDurationMs) : '无数据'}小时`);
+    renderTrendChart(stats.recent30DaysGrouped, "最近30天", 30);
+    dv.header(4, "最近30天入睡/起床时间分布");
+    renderStackedDistChart(stats.recent30DaysRecords, "最近30天");
+
+    dv.header(3, "按月统计");
+    renderTable("月份", stats.limitedMonthlyData);
+    renderAvgChart(stats.limitedMonthlyData, "月");
+
+    dv.header(3, "按年统计");
+    renderTable("年份", stats.limitedYearlyData);
+    renderAvgChart(stats.limitedYearlyData, "年");
+
+    dv.el('p', `🛌 睡眠记录共 ${stats.totalRecords} 条`, { cls: 'sleep-record-count' });
+}
+
+// ------------------------------------------------------------------
+// --- 主执行逻辑 ---
+// ------------------------------------------------------------------
+
+const main = () => {
+    const style = document.createElement('style');
+    style.textContent = `
+        .dataview.container { width: 100% !important; max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+        canvas { width: 100% !important; max-height: 350px !important; }
+        .sleep-record-count { font-size: 0.8em; color: var(--text-muted); text-align: left; margin-top: 15px; }
+        @media (max-width: 600px) { canvas { max-height: 300px !important; } }
+    `;
+    document.head.appendChild(style);
+
+    const page = dv.page(FILE_PATH);
+    const records = parseSleepData(page);
+
+    if (records) {
+        const statistics = calculateAllStatistics(records);
+        renderReport(statistics);
     }
 };
 
-// ------------------------------------------------------------------
-// --- 动态加载脚本的逻辑 ---
-// ------------------------------------------------------------------
-
-const loadScripts = () => {
-    return new Promise((resolve, reject) => {
-        if (typeof Chart !== 'undefined') {
-            resolve();
-            return;
-        }
-
-        const chartScript = document.createElement('script');
-        chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
-        document.head.appendChild(chartScript);
-
-        chartScript.onload = () => resolve();
-        chartScript.onerror = () => reject(new Error("无法加载 Chart.js 库"));
-    });
-};
-
-loadScripts()
-    .then(() => {
-        processAndRender();
-    })
-    .catch((error) => {
-        dv.paragraph(`⚠️ **错误：** ${error.message}。图表可能不可用，但表格将继续显示。`);
-        processAndRender();
-    });
+if (typeof Chart === 'undefined') {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js';
+    document.head.appendChild(script);
+    script.onload = main;
+    script.onerror = () => dv.paragraph("❌ 无法加载 Chart.js 库，图表无法显示。");
+} else {
+    main();
+}
 ```
 ````
 

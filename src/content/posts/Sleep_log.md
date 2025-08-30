@@ -212,7 +212,7 @@ if (page && page.file && page.file.lists && page.file.lists.length > 0) {
 最后一步：让数据“活”起来！在任何笔记中插入以下DataviewJS代码块，它会自动加载Chart.js库，生成多种图表和统计。
 
 <details>
-<summary style="color: pink;">点击查看/折叠睡眠报告 DataviewJS </summary>
+<summary style="color: pink;">点击查看/折叠睡眠报告 Dataviewjs</summary>
 
 &#x60;&#x60;&#x60;
 

@@ -219,12 +219,12 @@ if (page && page.file && page.file.lists && page.file.lists.length > 0) {
 ````
 ```dataviewjs
 // --- 配置 ---
-const FILE_PATH = "睡眠日记-2025.md";
+const FILE_PATH = "6-记录/睡眠/睡眠日记-2025.md";
 // --- 配置结束 ---
 
-// ------------------------------------------------------------------
 // --- 辅助函数与常量 ---
-// ------------------------------------------------------------------
+
+// --- Date：25.08.29 ---
 
 const IS_IOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
@@ -327,11 +327,10 @@ function parseSleepData(page) {
 // ------------------------------------------------------------------
 // --- 2. 核心统计计算模块 ---
 // ------------------------------------------------------------------
-
 function calculateAllStatistics(records) {
-    const currentDate = dv.date('now');
-    const sevenDaysAgo = currentDate.minus({ days: 7 });
-    const thirtyDaysAgo = currentDate.minus({ days: 30 });
+    const today = dv.date('now').startOf('day'); // 获取今天的日期，但时间设为 00:00:00
+    const sevenDaysAgo = today.minus({ days: 7 }); 
+    const thirtyDaysAgo = today.minus({ days: 30 }); 
 
     const stats = {
         recent7DaysRecords: [],
@@ -342,13 +341,15 @@ function calculateAllStatistics(records) {
     };
 
     for (const record of records) {
-        const recordDate = record.date;
-        if (recordDate.ts >= thirtyDaysAgo.ts && recordDate.ts <= currentDate.ts) {
+        const recordDate = record.date; 
+        
+        if (recordDate.ts >= thirtyDaysAgo.ts && recordDate.ts <= today.ts) {
             stats.recent30DaysRecords.push(record);
             if (recordDate.ts >= sevenDaysAgo.ts) {
                 stats.recent7DaysRecords.push(record);
             }
         }
+        
         const monthKey = recordDate.toFormat("yyyy-'年' MM'-月'");
         if (!stats.byMonth[monthKey]) stats.byMonth[monthKey] = [];
         stats.byMonth[monthKey].push(record);

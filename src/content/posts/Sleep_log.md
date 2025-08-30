@@ -214,7 +214,6 @@ if (page && page.file && page.file.lists && page.file.lists.length > 0) {
 点这个，快速到底部，手机用户有救了。[跳转至代码末尾](#结语)
 
 ````
-```dataviewjs
 // --- 配置 ---
 // 1. 请在这里准确填入您的睡眠记录文件名或完整路径
 const FILE_PATH = "睡眠日记-2025.md";
@@ -233,8 +232,8 @@ const processAndRender = () => {
         return; // 提前退出
     }
 
-    // 当前日期（固定为2025-08-24）
-    const currentDate = dv.date("2025-08-24");
+    // 动态获取当前日期
+    const currentDate = dv.date('now');
 
     // 检测 iOS 设备
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -406,13 +405,13 @@ const processAndRender = () => {
                 .slice(0, 12)
         );
 
-        // 最近7天数据（从2025-08-24向前推7天）
+        // 最近7天数据（从当前日期向前推7天）
         const sevenDaysAgo = currentDate.minus({ days: 7 });
         const recent7DaysRecords = records.filter(r => r.date >= sevenDaysAgo && r.date <= currentDate);
         const recent7DaysData = groupBy(recent7DaysRecords, r => r.date.toFormat("MM-dd"));
         const sevenDayAvg = calculateAverages(recent7DaysRecords);
 
-        // 最近30天数据（从2025-08-24向前推30天）
+        // 最近30天数据（从当前日期向前推30天）
         const thirtyDaysAgo = currentDate.minus({ days: 30 });
         const recent30DaysRecords = records.filter(r => r.date >= thirtyDaysAgo && r.date <= currentDate);
         const recent30DaysData = groupBy(recent30DaysRecords, r => r.date.toFormat("MM-dd"));

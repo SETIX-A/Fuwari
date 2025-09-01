@@ -156,21 +156,47 @@ new Notice(`🛌 已记录睡觉时间: ${bedTime}`, 3000);
 
 ````
 ```dataviewjs
-const sleepFile = "";
+// --- 配置区 ---
 const displayCount = 4; // 定义显示的行数，可任意修改！
-const page = dv.page(sleepFile);
+// --- 配置区结束 ---
 
-if (page && page.file && page.file.lists && page.file.lists.length > 0) {
-    const recordCount = page.file.lists.length;
-    // 输出总记录数
-    dv.paragraph(`🛌 睡眠记录共有 **${recordCount}** 条数据`);
+// 获取当前笔记的元数据
+const currentPage = dv.current();
+
+// 检查当前笔记是否存在列表项
+if (currentPage && currentPage.file.lists.length > 0) {
+    const recordCount = currentPage.file.lists.length;
     
-    // 获取最后 displayCount 条记录
-    const recentRecords = page.file.lists.slice(-displayCount);
+    // 1. 输出总记录数
+    dv.paragraph(`🛌 睡眠记录共有 **${recordCount}** 条`);
     
-    // 输出最近的记录
-    dv.header(3, "最近记录"); // 标题，级别3（###）
-    dv.list(recentRecords.map(item => item.text)); // 列出每条记录的文本内容
+    // 2. 创建一个可点击的、会滚动的标题
+    const clickableHeader = dv.el("h3", "最近记录 ⏬");
+    clickableHeader.style.cursor = "pointer"; 
+    
+    // 3. 添加正确的点击事件
+    clickableHeader.onclick = () => {
+        // --- 核心修正部分 ---
+        // 从当前 dataview 容器开始，向上查找真正负责滚动的父元素
+        let scrollableContainer = dv.container;
+        while (scrollableContainer && scrollableContainer.scrollHeight <= scrollableContainer.clientHeight) {
+            scrollableContainer = scrollableContainer.parentElement;
+        }
+        
+        // 如果找到了滚动容器，就命令它滚动到底部
+        if (scrollableContainer) {
+            scrollableContainer.scrollTo({
+                top: scrollableContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+        // --- 修正部分结束 ---
+    };
+    
+    // 4. 获取并显示最近的记录
+    const recentRecords = currentPage.file.lists.slice(-displayCount);
+    dv.list(recentRecords.map(item => item.text));
+
 } else {
     dv.paragraph("❌ 未找到睡眠记录数据或记录为空");
 }

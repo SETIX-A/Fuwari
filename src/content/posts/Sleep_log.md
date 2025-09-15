@@ -211,7 +211,6 @@ if (currentPage && currentPage.file.lists.length > 0) {
 :::tip[提示]
 你可以前往“设置”>“命令面板”，使用置顶功能，让你的睡眠命令永远出现在最前面。
 :::
-![示例图片](src/assets/images/sleep-2.jpg "命令面板")
 
 ## Part 3: 数据可视化——用Dataview生成图表
 
